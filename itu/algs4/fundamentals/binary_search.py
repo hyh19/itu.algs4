@@ -1,9 +1,18 @@
+from __future__ import annotations
+
 import sys
-from typing import List, TypeVar
+from typing import List, TypeVar, Protocol
 
 from itu.algs4.stdlib import stdio
 
-T = TypeVar("T")
+T = TypeVar("T", bound="Comparable")
+
+
+class Comparable(Protocol):
+    """Protocol for annotating comparable types."""
+
+    def __lt__(self: T, other: T) -> bool: ...
+
 
 # Created for BADS 2018
 # See README.md for details
@@ -16,7 +25,7 @@ The index_of operation takes logarithmic time in the worst case.
 """
 
 
-def index_of(a: List[T], key: T):
+def index_of(a: List[T], key: T) -> int:
     """Returns the index of the specified key in the specified array.
 
     :param a: the array of items, must be sorted in ascending order

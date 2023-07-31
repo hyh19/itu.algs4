@@ -14,26 +14,26 @@ is the alphabet size.
 
 
 class KMP:
-    def __init__(self, pat):
+    def __init__(self, pat: str) -> None:
         """Preprocesses the pattern string.
 
         :param pat: the pattern string
 
         """
-        self.pat = pat
+        self._pat = pat
         M = len(pat)
         R = 256
-        self.dfa = [[0 for c in range(0, M)] for r in range(0, R)]
-        self.dfa[ord(pat[0])][0] = 1
+        self._dfa = [[0 for c in range(0, M)] for r in range(0, R)]
+        self._dfa[ord(pat[0])][0] = 1
         X = 0
         for j in range(1, M):
             # Compute dfa[][j]
             for c in range(0, R):
-                self.dfa[c][j] = self.dfa[c][X]  # Copy mismatch cases
-            self.dfa[ord(pat[j])][j] = j + 1  # Set match case
-            X = self.dfa[ord(pat[j])][X]  # Update restart state
+                self._dfa[c][j] = self._dfa[c][X]  # Copy mismatch cases
+            self._dfa[ord(pat[j])][j] = j + 1  # Set match case
+            X = self._dfa[ord(pat[j])][X]  # Update restart state
 
-    def search(self, txt):
+    def search(self, txt: str) -> int:
         """Returns the index of the first occurrrence of the pattern string in the
         text string.
 
@@ -43,11 +43,11 @@ class KMP:
 
         """
         N = len(txt)
-        M = len(self.pat)
+        M = len(self._pat)
         j = 0
         i = 0
         while i < N and j < M:
-            j = self.dfa[ord(txt[i])][j]
+            j = self._dfa[ord(txt[i])][j]
             i += 1
         if j == M:  # found (hit end of pattern)
             return i - M

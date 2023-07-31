@@ -8,17 +8,18 @@ For additional documentation, see Section 5.1 of Algorithms, 4th Edition
 by Robert Sedgewick and Kevin Wayne.
 
 """
+from typing import List
 
 cutoff = 15
 
 
 # compare characters at position d
-def _less(a, b, d):
-    return a[d] < b[d]
+def _less(s1: str, s2: str, d: int) -> bool:
+    return s1[d] < s2[d]
 
 
 # insertion sort a[lo..hi], starting at dth character
-def _insertion(a, lo, hi, d):
+def _insertion(a: List[str], lo: int, hi: int, d: int) -> None:
     for i in range(lo, hi + 1):
         j = i
         while j > lo and _less(a[j], a[j - 1], d):
@@ -27,7 +28,7 @@ def _insertion(a, lo, hi, d):
 
 
 # sort from a[lo] to a[hi], starting at the dth character
-def _sort(a, lo, hi, d, aux, radix):
+def _sort(a: List[str], lo: int, hi: int, d: int, aux: List[str], radix: int) -> None:
     global cutoff
 
     if hi <= lo + cutoff:
@@ -59,7 +60,7 @@ def _sort(a, lo, hi, d, aux, radix):
         _sort(a, lo + count[r], lo + count[r + 1] - 1, d + 1, aux, radix)
 
 
-def sort(a, radix=256):
+def sort(a: List[str], radix: int = 256) -> None:
     """Rearranges the array of 32-bit integers in ascending order. Currently
     assumes that the integers are nonnegative.
 
@@ -67,7 +68,7 @@ def sort(a, radix=256):
 
     """
     n = len(a)
-    aux = [None] * n
+    aux = a.copy()
     _sort(a, 0, n - 1, 0, aux, radix)
 
 

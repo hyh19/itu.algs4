@@ -13,17 +13,28 @@ by Robert Sedgewick and Kevin Wayne.
 
 """
 
+from __future__ import annotations
+from typing import List, TypeVar, Protocol
 from itu.algs4.stdlib import stdio, stdrandom
 
+T = TypeVar("T", bound="Comparable")
 
-def sort(array):
+
+class Comparable(Protocol):
+    """Protocol for annotating comparable types."""
+
+    def __lt__(self: T, other: T) -> bool:
+        ...
+
+
+def sort(array: List[T]) -> None:
     """Rearranges the array in ascending order, using the natural order."""
     stdrandom.shuffle(array)
     _sort(array, 0, len(array) - 1)
 
 
 # quicksort the subarray from array[lo] to array[hi]
-def _sort(array, lo, hi):
+def _sort(array: List[T], lo: int, hi: int) -> None:
     if hi <= lo:
         return
     j = _partition(array, lo, hi)
@@ -34,12 +45,11 @@ def _sort(array, lo, hi):
 # partition the subarray array[lo..hi] so that
 # array[lo..j-1] <= array[j] <= array[j+1..hi]
 # and return the index j
-def _partition(array, lo, hi):
+def _partition(array: List[T], lo: int, hi: int) -> int:
     i = lo
     j = hi + 1
     v = array[lo]
     while True:
-
         while array[i + 1] < v:
             i += 1
             if i == hi:
@@ -66,7 +76,7 @@ def _partition(array, lo, hi):
     return j
 
 
-def select(array, k):
+def select(array: List[T], k: int) -> T:
     """Rearranges the array so that array[k] contains the kth smalles key;
     array[0] through array[k-1] are less than (or equal to) array[k]; and
     array[k+1] through array[n-1] are greather than (or equal to) array[k]
@@ -91,7 +101,7 @@ def select(array, k):
 
 
 # exchange array[i] and array[j]
-def _exch(array, i, j):
+def _exch(array: List[T], i: int, j: int) -> None:
     swap = array[i]
     array[i] = array[j]
     array[j] = swap
@@ -102,11 +112,11 @@ def _exch(array, i, j):
 ###########################################################
 
 
-def is_sorted(array):
+def is_sorted(array: List[T]) -> bool:
     return _is_sorted(array, 0, len(array) - 1)
 
 
-def _is_sorted(array, lo, hi):
+def _is_sorted(array: List[T], lo: int, hi: int) -> bool:
     for i in range(lo + 1, hi + 1):
         if array[i] < array[i - 1]:
             return False
@@ -114,8 +124,8 @@ def _is_sorted(array, lo, hi):
 
 
 # print array to standard output
-def show(array):
-    stdio.write(" ".join(array))
+def show(array: List[T]) -> None:
+    stdio.write(" ".join([str(item) for item in array]))
 
 
 if __name__ == "__main__":

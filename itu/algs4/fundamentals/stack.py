@@ -9,9 +9,9 @@ T = TypeVar("T")
 
 class Node(Generic[T]):
     # helper linked list class
-    def __init__(self):
-        self.item: T = None
-        self.next: Optional[Node] = None
+    def __init__(self) -> None:
+        self.item: Optional[T] = None
+        self.next: Optional[Node[T]] = None
 
 
 class Stack(Generic[T]):
@@ -124,68 +124,68 @@ class Stack(Generic[T]):
 
 class FixedCapacityStack(Generic[T]):
     def __init__(self, capacity: int):
-        self.a: List[Optional[T]] = [None] * capacity
-        self.n: int = 0
+        self._a: List[Optional[T]] = [None] * capacity
+        self._n: int = 0
 
     def is_empty(self) -> bool:
-        return self.n == 0
+        return self._n == 0
 
     def size(self) -> int:
-        return self.n
+        return self._n
 
     def __len__(self) -> int:
         return self.size()
 
-    def push(self, item: T):
-        self.a[self.n] = item
-        self.n += 1
+    def push(self, item: T) -> None:
+        self._a[self._n] = item
+        self._n += 1
 
     def pop(self) -> T:
-        self.n -= 1
-        item = self.a[self.n]
+        self._n -= 1
+        item = self._a[self._n]
         assert item is not None
         return item
 
 
 class ResizingArrayStack(Generic[T]):
     def __init__(self) -> None:
-        self.a: List[Optional[T]] = [None]
-        self.n: int = 0
+        self._a: List[Optional[T]] = [None]
+        self._n: int = 0
 
     def is_empty(self) -> bool:
-        return self.n == 0
+        return self._n == 0
 
     def size(self) -> int:
-        return self.n
+        return self._n
 
     def __len__(self) -> int:
         return self.size()
 
     def resize(self, capacity: int) -> None:
         temp: List[Optional[T]] = [None] * capacity
-        for i in range(self.n):
-            temp[i] = self.a[i]
-        self.a = temp
+        for i in range(self._n):
+            temp[i] = self._a[i]
+        self._a = temp
 
     def push(self, item: T) -> None:
-        if self.n == len(self.a):
-            self.resize(2 * len(self.a))
-        self.a[self.n] = item
-        self.n += 1
+        if self._n == len(self._a):
+            self.resize(2 * len(self._a))
+        self._a[self._n] = item
+        self._n += 1
 
     def pop(self) -> T:
-        self.n -= 1
-        item = self.a[self.n]
-        self.a[self.n] = None
-        if self.n > 0 and self.n <= len(self.a) // 4:
-            self.resize(len(self.a) // 2)
+        self._n -= 1
+        item = self._a[self._n]
+        self._a[self._n] = None
+        if 0 < self._n <= len(self._a) // 4:
+            self.resize(len(self._a) // 2)
         assert item is not None
         return item
 
     def __iter__(self) -> Iterator[T]:
-        i = self.n - 1
+        i = self._n - 1
         while i >= 0:
-            item = self.a[i]
+            item = self._a[i]
             assert item is not None
             yield item
             i -= 1

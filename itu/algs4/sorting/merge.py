@@ -2,7 +2,9 @@
 # See README.md for details
 # Python 3
 
-from typing import List, Optional
+from __future__ import annotations
+
+from typing import List, Optional, TypeVar, Protocol
 
 """
 This module provides functions for sorting an array using mergesort.
@@ -10,10 +12,17 @@ This module provides functions for sorting an array using mergesort.
 For additional documentation, see Section 2.2 of Algorithms, 4th Edition
 by Robert Sedgewick and Kevin Wayne.
 """
-#  Sorts a sequence of strings from standard input using mergesort
+
+T = TypeVar("T", bound="Comparable")
 
 
-def _is_sorted(a: List, lo: int = 0, hi: Optional[int] = None):
+class Comparable(Protocol):
+    """Protocol for annotating comparable types."""
+
+    def __lt__(self: T, other: T) -> bool: ...
+
+
+def _is_sorted(a: List[T], lo: int = 0, hi: Optional[int] = None) -> bool:
     # If hi is not specified, use whole array
     if hi is None:
         hi = len(a)
@@ -26,7 +35,7 @@ def _is_sorted(a: List, lo: int = 0, hi: Optional[int] = None):
 
 
 # stably merge a[lo .. mid] with a[mid+1 ..hi] using aux[lo .. hi]
-def _merge(a: List, aux: List, lo: int, mid: int, hi: int):
+def _merge(a: List[T], aux: List[T], lo: int, mid: int, hi: int) -> None:
     # precondition: a[lo .. mid] and a[mid+1 .. hi] are sorted subarrays
     assert _is_sorted(a, lo, mid)
     assert _is_sorted(a, mid + 1, hi)
@@ -57,7 +66,7 @@ def _merge(a: List, aux: List, lo: int, mid: int, hi: int):
     # mergesort a[lo..hi] using auxiliary array aux[lo..hi]
 
 
-def _sort(a: List, aux: List, lo: int, hi: int):
+def _sort(a: List[T], aux: List[T], lo: int, hi: int) -> None:
     if hi <= lo:
         return
     mid = lo + (hi - lo) // 2
@@ -66,13 +75,13 @@ def _sort(a: List, aux: List, lo: int, hi: int):
     _merge(a, aux, lo, mid, hi)
 
 
-def sort(a: List):
+def sort(a: List[T]) -> None:
     """Rearranges the array in ascending order, using the natural order.
 
     :param a: the array to be sorted
 
     """
-    aux = [None] * len(a)
+    aux = a.copy()
     _sort(a, aux, 0, len(a) - 1)
     assert _is_sorted(a)
 
@@ -84,6 +93,8 @@ if __name__ == "__main__":
     import sys
 
     from itu.algs4.stdlib import stdio
+
+    #  Sorts a sequence of strings from standard input using mergesort
 
     if len(sys.argv) > 1:
         try:

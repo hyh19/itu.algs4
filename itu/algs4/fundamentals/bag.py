@@ -7,7 +7,13 @@
 from typing import Generic, Iterator, Optional, TypeVar
 
 T = TypeVar("T")
-S = TypeVar("S")
+
+
+class Node(Generic[T]):
+    # helper linked list class
+    def __init__(self) -> None:
+        self.item: Optional[T] = None
+        self.next: Optional[Node[T]] = None
 
 
 class Bag(Generic[T]):
@@ -23,15 +29,9 @@ class Bag(Generic[T]):
 
     """
 
-    class Node(Generic[S]):
-        # helper linked list class
-        def __init__(self):
-            self.next: Optional[Bag.Node[T]] = None
-            self.item: Optional[S] = None
-
     def __init__(self) -> None:
         """Initializes an empty bag."""
-        self._first: Optional[Bag.Node[T]] = None  # beginning of bag
+        self._first: Optional[Node[T]] = None  # beginning of bag
         self._n = 0  # number of elements in bag
 
     def is_empty(self) -> bool:
@@ -61,7 +61,7 @@ class Bag(Generic[T]):
 
         """
         oldfirst = self._first
-        self._first = Bag.Node()
+        self._first = Node()
         self._first.item = item
         self._first.next = oldfirst
         self._n += 1

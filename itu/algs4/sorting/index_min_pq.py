@@ -2,10 +2,22 @@
 # See README.md for details
 # Python 3
 
-from itu.algs4.errors.errors import IllegalArgumentException, NoSuchElementException
+from __future__ import annotations
+from typing import TypeVar, Protocol, List, Optional, Generic, Iterator
+from itu.algs4.errors.errors import IllegalArgumentException
+from itu.algs4.errors.errors import NoSuchElementException
+
+Key = TypeVar("Key", bound="Comparable")
 
 
-class IndexMinPQ:
+class Comparable(Protocol):
+    """Protocol for annotating comparable types."""
+
+    def __lt__(self: Key, other: Key) -> bool:
+        ...
+
+
+class IndexMinPQ(Generic[Key]):
     """The IndexMinPQ class represents an indexed priority queue of generic
     keys. It supports the usual insert and delete-the-minimum operations, along
     with delete and change-the-key methods. In order to let the client refer to
@@ -26,7 +38,7 @@ class IndexMinPQ:
 
     """
 
-    def __init__(self, max_n):
+    def __init__(self, max_n: int) -> None:
         """Initializes an empty indexed priority queue with indices between 0.
 
         and max_n - 1.
@@ -34,13 +46,13 @@ class IndexMinPQ:
         :raises IllegalArgumentException: if max_n < 0
 
         """
-        self.max_n = max_n
-        self.n = 0
-        self.keys = [None] * (max_n + 1)
-        self.pq = [0] * (max_n + 1)
-        self.qp = [-1] * (max_n + 1)
+        self._max_n = max_n
+        self._n = 0
+        self._pq = [0] * (max_n + 1)
+        self._qp = [-1] * (max_n + 1)
+        self._keys: List[Optional[Key]] = [None] * (max_n + 1)
 
-    def insert(self, i, key):
+    def insert(self, i: int, key: Key) -> None:
         """Associates key with index i.
 
         :param i: an index
@@ -49,17 +61,17 @@ class IndexMinPQ:
         :raises IllegalArgumentException: if there already is an item associated with index i
 
         """
-        if i < 0 or i >= self.max_n:
+        if i < 0 or i >= self._max_n:
             raise IllegalArgumentException("index is not within range")
         if self.contains(i):
             raise IllegalArgumentException("index is already in the priority queue")
-        self.n += 1
-        self.qp[i] = self.n
-        self.pq[self.n] = i
-        self.keys[i] = key
-        self._swim(self.n)
+        self._n += 1
+        self._qp[i] = self._n
+        self._pq[self._n] = i
+        self._keys[i] = key
+        self._swim(self._n)
 
-    def contains(self, i):
+    def contains(self, i: int) -> bool:
         """Is i an index on this priority queue?
 
         :param i: an index
@@ -68,11 +80,11 @@ class IndexMinPQ:
         :raises IllegalArgumentException: unless 0 <= i < max_n
 
         """
-        if i < 0 or i >= self.max_n:
+        if i < 0 or i >= self._max_n:
             raise IllegalArgumentException("index is not within range")
-        return self.qp[i] != -1
+        return self._qp[i] != -1
 
-    def change_key(self, i, key):
+    def change_key(self, i: int, key: Key) -> None:
         """Change the key associated with index i to the specified value.
 
         :param i: the index of the key to change
@@ -81,15 +93,15 @@ class IndexMinPQ:
         :raises NoSuchElementException: if no key is associated with index i
 
         """
-        if i < 0 or i >= self.max_n:
+        if i < 0 or i >= self._max_n:
             raise IllegalArgumentException("index is not within range")
         if not self.contains(i):
             raise NoSuchElementException("index is not in the priority queue")
-        self.keys[i] = key
-        self._swim(self.qp[i])
-        self._sink(self.qp[i])
+        self._keys[i] = key
+        self._swim(self._qp[i])
+        self._sink(self._qp[i])
 
-    def decrease_key(self, i, key):
+    def decrease_key(self, i: int, key: Key) -> None:
         """Decrease the key associated with index i to the specified value.
 
         :param i: the index of the key to decrease
@@ -99,18 +111,18 @@ class IndexMinPQ:
         :raises NoSuchElementException: if no key is associated with index i
 
         """
-        if i < 0 or i >= self.max_n:
+        if i < 0 or i >= self._max_n:
             raise IllegalArgumentException("index is not within range")
         if not self.contains(i):
             raise IllegalArgumentException("index is not in the priority queue")
-        if self.keys[i] <= key:
+        if self._keys[i] <= key:
             raise IllegalArgumentException(
                 "calling decrease_key() with given argument would not strictly decrease the key"
             )
-        self.keys[i] = key
-        self._swim(self.qp[i])
+        self._keys[i] = key
+        self._swim(self._qp[i])
 
-    def increase_key(self, i, key):
+    def increase_key(self, i: int, key: Key) -> None:
         """Increase the key associated with index i to the specified value.
 
         :param i: the index of the key to increase
@@ -120,18 +132,18 @@ class IndexMinPQ:
         :raises NoSuchElementException: if no key is associated with index i
 
         """
-        if i < 0 or i >= self.max_n:
+        if i < 0 or i >= self._max_n:
             raise IllegalArgumentException("index is not within range")
         if not self.contains(i):
             raise NoSuchElementException("index is not in the priority queue")
-        if self.keys[i] >= key:
+        if self._keys[i] >= key:
             raise IllegalArgumentException(
                 "calling increase_key() with given argument would not strictly increase the key"
             )
-        self.keys[i] = key
-        self._sink(self.qp[i])
+        self._keys[i] = key
+        self._sink(self._qp[i])
 
-    def delete(self, i):
+    def delete(self, i: int) -> None:
         """Remove the key associated with index i.
 
         :param i: the index of the key to remove
@@ -139,78 +151,80 @@ class IndexMinPQ:
         :raises NoSuchElementException: if no key is associated with index i
 
         """
-        if i < 0 or i >= self.max_n:
+        if i < 0 or i >= self._max_n:
             raise IllegalArgumentException("index is not in range")
         if not self.contains(i):
             raise NoSuchElementException("index is not in the priority queue")
-        index = self.qp[i]
-        self._exch(index, self.n)
-        self.n -= 1
+        index = self._qp[i]
+        self._exch(index, self._n)
+        self._n -= 1
         self._sink(index)
-        self.keys[i] = None
-        self.qp[i] = -1
+        self._keys[i] = None
+        self._qp[i] = -1
 
-    def min_index(self):
+    def min_index(self) -> int:
         """
         Returns an index associated with a minimum key.
         :return: an index associated with a minimum key
         :rtype: int
         :raises NoSuchElementException: if this priority queue is empty
         """
-        if self.n == 0:
+        if self._n == 0:
             raise NoSuchElementException("Priority queue underflow")
-        return self.pq[1]
+        return self._pq[1]
 
-    def min_key(self):
+    def min_key(self) -> Key:
         """
         Returns a minimum key.
         :return: a minimum key
         :raises NoSuchElementException: if this priority queue is empty
         """
-        if self.n == 0:
+        if self._n == 0:
             raise NoSuchElementException("Priority queue underflow")
-        return self.keys[self.pq[1]]
+        key = self._keys[self._pq[1]]
+        assert key is not None
+        return key
 
-    def del_min(self):
+    def del_min(self) -> int:
         """
         Removes a minimum key and returns its associated index.
         :return: an index associated with a minimum key
         :raises NoSuchElementException: if this priority queue is empty
         :rtype: int
         """
-        if self.n == 0:
+        if self._n == 0:
             raise NoSuchElementException("Priority queue underflow")
-        _min = self.pq[1]
-        self._exch(1, self.n)
-        self.n -= 1
+        min_index = self._pq[1]
+        self._exch(1, self._n)
+        self._n -= 1
         self._sink(1)
-        self.qp[_min] = -1
-        self.keys[_min] = None
-        self.pq[self.n + 1] = -1
-        return _min
+        self._qp[min_index] = -1
+        self._keys[min_index] = None
+        self._pq[self._n + 1] = -1
+        return min_index
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         """Returns True if this priority queue is empty.
 
         :return: True if this priority queue is empty False otherwise
         :rtype: bool
 
         """
-        return self.n == 0
+        return self._n == 0
 
-    def size(self):
+    def size(self) -> int:
         """Returns the number of keys on this priority queue.
 
         :return: the number of keys on this priority queue
         :rtype: int
 
         """
-        return self.n
+        return self._n
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.size()
 
-    def key_of(self, i):
+    def key_of(self, i: int) -> Key:
         """Returns the key associated with index i.
 
         :param i: the index of the key to return
@@ -219,24 +233,26 @@ class IndexMinPQ:
         :raises NoSuchElementException: if no key is associated with index i
 
         """
-        if i < 0 or i >= self.max_n:
+        if i < 0 or i >= self._max_n:
             raise IllegalArgumentException("index is out of range")
         if not self.contains(i):
             raise IllegalArgumentException("index is not on the priority queue")
-        return self.keys[i]
+        key = self._keys[i]
+        assert key is not None
+        return key
 
-    def _exch(self, i, j):
+    def _exch(self, i: int, j: int) -> None:
         """Exchanges the position of items at index i and j on the heap.
 
         :param i: index of the first item
         :param j: index of the second item
 
         """
-        self.pq[i], self.pq[j] = self.pq[j], self.pq[i]
-        self.qp[self.pq[i]] = i
-        self.qp[self.pq[j]] = j
+        self._pq[i], self._pq[j] = self._pq[j], self._pq[i]
+        self._qp[self._pq[i]] = i
+        self._qp[self._pq[j]] = j
 
-    def _greater(self, i, j):
+    def _greater(self, i: int, j: int) -> bool:
         """Returns True if key at index i on the heap is greater than key at
         index j.
 
@@ -246,9 +262,9 @@ class IndexMinPQ:
         :rtype: bool
 
         """
-        return self.keys[self.pq[i]] > self.keys[self.pq[j]]
+        return self._keys[self._pq[i]] > self._keys[self._pq[j]]
 
-    def _swim(self, k):
+    def _swim(self, k: int) -> None:
         """Moves item at index k up to a legal position on the heap.
 
         :param k: Index of the item on the heap to be moved
@@ -258,27 +274,29 @@ class IndexMinPQ:
             self._exch(k, k // 2)
             k = k // 2
 
-    def _sink(self, k):
+    def _sink(self, k: int) -> None:
         """Moves item at index k down to a legal position on the heap.
 
         :param k: Index of the item on the heap to be moved
 
         """
-        while 2 * k <= self.n:
+        while 2 * k <= self._n:
             j = 2 * k
-            if j < self.n and self._greater(j, j + 1):
+            if j < self._n and self._greater(j, j + 1):
                 j += 1
             if not self._greater(k, j):
                 break
             self._exch(k, j)
             k = j
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[int]:
         """Iterates over all the items in this priority queue in ascending
         order."""
-        copy = IndexMinPQ(len(self.pq) - 1)
-        for i in range(1, self.n + 1):
-            copy.insert(self.pq[i], self.keys[self.pq[i]])
+        copy: IndexMinPQ[Key] = IndexMinPQ(len(self._pq) - 1)
+        for i in range(1, self._n + 1):
+            key = self._keys[self._pq[i]]
+            assert key is not None
+            copy.insert(self._pq[i], key)
         while not copy.is_empty():
             yield copy.del_min()
 

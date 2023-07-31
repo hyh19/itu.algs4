@@ -8,9 +8,10 @@ For additional documentation, see Section 5.1 of Algorithms, 4th Edition
 by Robert Sedgewick and Kevin Wayne.
 
 """
+from typing import List
 
 
-def sort(a, w, radix=256):
+def sort(a: List[str], w: int, radix: int = 256) -> None:
     """Rearranges the array of w-character strings in ascending order.
 
     :param a: the array to be sorted
@@ -20,7 +21,7 @@ def sort(a, w, radix=256):
     """
 
     n = len(a)
-    aux = [None] * n
+    aux = a.copy()
 
     for d in range(w - 1, -1, -1):  # from w-i to 0
         # sort by key-indexed counting on dth character

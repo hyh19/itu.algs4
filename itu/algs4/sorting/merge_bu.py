@@ -9,10 +9,22 @@ For additional documentation, see Section 2.1 of Algorithms, 4th Edition
 by Robert Sedgewick and Kevin Wayne.
 
 """
-#  Sorts a sequence of strings from standard input using mergesort
+
+from __future__ import annotations
+
+from typing import List, TypeVar, Protocol
+
+T = TypeVar("T", bound="Comparable")
 
 
-def _is_sorted(a, lo=0, hi=None):
+class Comparable(Protocol):
+    """Protocol for annotating comparable types."""
+
+    def __lt__(self: T, other: T) -> bool:
+        ...
+
+
+def _is_sorted(a: List[T], lo=0, hi=None) -> bool:
     # If hi is not specified, use whole array
     if hi is None:
         hi = len(a)
@@ -25,7 +37,7 @@ def _is_sorted(a, lo=0, hi=None):
 
 
 # stably merge a[lo .. mid] with a[mid+1 ..hi] using aux[lo .. hi]
-def _merge(a, aux, lo, mid, hi):
+def _merge(a: List[T], aux: List[T], lo: int, mid: int, hi: int) -> None:
     # copy to aux[]
     for k in range(lo, hi + 1):
         aux[k] = a[k]
@@ -47,14 +59,14 @@ def _merge(a, aux, lo, mid, hi):
             i += 1
 
 
-def sort(a):
+def sort(a: List[T]) -> None:
     """Rearranges the array in ascending order, using the natural order.
 
     :param a: the array to be sorted
 
     """
     n = len(a)
-    aux = [None] * n
+    aux = a.copy()
 
     length = 1
     while length < n:
@@ -76,6 +88,8 @@ if __name__ == "__main__":
     import sys
 
     from itu.algs4.stdlib import stdio
+
+    #  Sorts a sequence of strings from standard input using mergesort
 
     if len(sys.argv) > 1:
         try:

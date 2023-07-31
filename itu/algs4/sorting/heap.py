@@ -2,14 +2,25 @@
 # See README.md for details
 # Python 3
 
-from itu.algs4.stdlib import stdio
-
 """
 The heap module provides a function for heapsorting an array.
 """
 
+from __future__ import annotations
+from typing import List, TypeVar, Protocol
+from itu.algs4.stdlib import stdio
 
-def sort(pq):
+T = TypeVar("T", bound="Comparable")
+
+
+class Comparable(Protocol):
+    """Protocol for annotating comparable types."""
+
+    def __lt__(self: T, other: T) -> bool:
+        ...
+
+
+def sort(pq: List[T]) -> None:
     """Rearranges the array in ascending order, using the natural order.
 
     :param pq: the array to be sorted
@@ -24,7 +35,7 @@ def sort(pq):
         _sink(pq, 1, n)
 
 
-def _sink(pq, k, n):
+def _sink(pq: List[T], k: int, n: int) -> None:
     """Moves item at index k down to a legal position on the heap.
 
     :param k: Index of the item to be moved
@@ -41,7 +52,7 @@ def _sink(pq, k, n):
         k = j
 
 
-def _less(pq, i, j):
+def _less(pq: List[T], i: int, j: int) -> bool:
     """Check if item at index i is greater than item at index j on the heap.
     Indices are "off-by-one" to support 1-based indexing.
 
@@ -54,7 +65,7 @@ def _less(pq, i, j):
     return pq[i - 1] < pq[j - 1]
 
 
-def _exch(pq, i, j):
+def _exch(pq: List[T], i: int, j: int) -> None:
     """Exchanges the positions of items at index i and j on the heap. Indices
     are "off-by-one" to support 1-based indexing.
 
@@ -66,7 +77,7 @@ def _exch(pq, i, j):
     pq[i - 1], pq[j - 1] = pq[j - 1], pq[i - 1]
 
 
-def _show(pq):
+def _show(pq: List[T]) -> None:
     """Print the contents of the array.
 
     :param pq: the array to be printed

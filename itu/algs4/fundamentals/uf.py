@@ -17,6 +17,7 @@ through n-1. The is-connected-to relation must be an equivalence relation:
 
 """
 import sys
+from typing import List
 
 from itu.algs4.stdlib import stdio
 
@@ -42,9 +43,9 @@ class UF:
         :param n: the number of sites
 
         """
-        self._count = n
-        self._parent = list(range(n))
-        self._rank = [0] * n
+        self._count: int = n
+        self._parent: List[int] = list(range(n))
+        self._rank: List[int] = [0] * n
 
     def _validate(self, p: int) -> None:
         # validate that p is a valid index
@@ -126,8 +127,8 @@ class QuickUnionUF:
         :param n: the number of sites
 
         """
-        self._count = n
-        self._parent = list(range(n))
+        self._count: int = n
+        self._parent: List[int] = list(range(n))
 
     def _validate(self, p: int) -> None:
         # validate that p is a valid index
@@ -200,9 +201,9 @@ class WeightedQuickUnionUF:
         :param n: the number of sites
 
         """
-        self._count = n
-        self._parent = list(range(n))
-        self._size = [1] * n
+        self._count: int = n
+        self._parent: List[int] = list(range(n))
+        self._size: List[int] = [1] * n
 
     def _validate(self, p: int) -> None:
         # validate that p is a valid index
@@ -280,8 +281,8 @@ class QuickFindUF:
         :param n: the number of sites
 
         """
-        self._count = n
-        self._id = list(range(n))
+        self._count: int = n
+        self._id: List[int] = list(range(n))
 
     def _validate(self, p: int) -> None:
         # validate that p is a valid index

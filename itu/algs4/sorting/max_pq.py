@@ -2,12 +2,19 @@
 # see README.md for details
 # Python 3
 
-from typing import Generic, Iterator, List, Optional, TypeVar
-
+from __future__ import annotations
+from typing import Generic, Iterator, List, Optional, TypeVar, Protocol
 from itu.algs4.errors.errors import NoSuchElementException
 from itu.algs4.stdlib import stdio
 
-Key = TypeVar("Key")
+Key = TypeVar("Key", bound="Comparable")
+
+
+class Comparable(Protocol):
+    """Protocol for annotating comparable types."""
+
+    def __lt__(self: Key, other: Key) -> bool:
+        ...
 
 
 class MaxPQ(Generic[Key]):
@@ -23,7 +30,7 @@ class MaxPQ(Generic[Key]):
 
     """
 
-    def __init__(self, _max: int = 1):
+    def __init__(self, _max: int = 1) -> None:
         """Initializes an empty priority queue with the given initial capacity.
 
         :param _max: the initial capacity, default value is 1
@@ -96,7 +103,7 @@ class MaxPQ(Generic[Key]):
     def __len__(self) -> int:
         return self.size()
 
-    def _sink(self, k) -> None:
+    def _sink(self, k: int) -> None:
         """Moves item at index k down to a legal position on the heap.
 
         :param k: Index of the item to be moved
@@ -121,7 +128,7 @@ class MaxPQ(Generic[Key]):
             self._exch(k, k // 2)
             k = k // 2
 
-    def _resize(self, capacity: int):
+    def _resize(self, capacity: int) -> None:
         """Copies the contents of the heap to a new array of size capacity.
 
         :param capacity: The capacity of the new array
@@ -132,7 +139,7 @@ class MaxPQ(Generic[Key]):
             temp[i] = self._pq[i]
         self._pq = temp
 
-    def _less(self, i: int, j: int):
+    def _less(self, i: int, j: int) -> bool:
         """Check if item at index i is less than item at index j on the heap.
 
         :param i: index of the first item
@@ -142,7 +149,7 @@ class MaxPQ(Generic[Key]):
         """
         return self._pq[i] < self._pq[j]
 
-    def _exch(self, i: int, j: int):
+    def _exch(self, i: int, j: int) -> None:
         """Exchanges the position of items at index i and j on the heap.
 
         :param i: index of the first item

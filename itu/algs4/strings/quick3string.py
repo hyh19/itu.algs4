@@ -4,9 +4,10 @@
 """The Quick3String module provides functions for sorting an array of strings
 using 3-way radix quicksort."""
 import sys
+from typing import List
 
 
-def sort(a):
+def sort(a: List[str]) -> None:
     """Rearranges the array of strings in ascending order.
 
     :param a: the array to be sorted.
@@ -15,7 +16,7 @@ def sort(a):
     _sort(a, 0, len(a) - 1, 0)
 
 
-def _sort(a, lo, hi, d):
+def _sort(a: List[str], lo: int, hi: int, d: int) -> None:
     if hi <= lo:
         return
     lt = lo
@@ -39,19 +40,19 @@ def _sort(a, lo, hi, d):
     _sort(a, gt + 1, hi, d)
 
 
-def _char_at(s, d):
+def _char_at(s: str, d: int) -> int:
     if d < len(s):
         return ord(s[d])
     else:
         return -1
 
 
-def _show(a):
+def _show(a: List[str]) -> None:
     for item in a:
         print(item)
 
 
-def is_sorted(a):
+def is_sorted(a: List[str]) -> bool:
     """Returns true if a is sorted.
 
     :param a: the array to be checked.
@@ -64,11 +65,11 @@ def is_sorted(a):
     return True
 
 
-def _less(v, w):
-    return v < w
+def _less(s1: str, s2: str) -> bool:
+    return s1 < s2
 
 
-def _exch(a, i, j):
+def _exch(a: List[str], i: int, j: int) -> None:
     t = a[i]
     a[i] = a[j]
     a[j] = t

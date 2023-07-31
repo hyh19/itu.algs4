@@ -12,12 +12,19 @@ time. The sorting algorithm is stable and uses O(1) extra memory.
 
 """
 import sys
-from typing import List, TypeVar
+from typing import List, TypeVar, Protocol
 
-T = TypeVar("T")
+T = TypeVar("T", bound="Comparable")
 
 
-def sort(a: List[T]):
+class Comparable(Protocol):
+    """Protocol for annotating comparable types."""
+
+    def __lt__(self: T, other: T) -> bool:
+        ...
+
+
+def sort(a: List[T]) -> None:
     """Rearranges the array in ascending order, using the natural order.
 
     :param a: the array to be sorted.
@@ -33,24 +40,24 @@ def sort(a: List[T]):
             _exch(a, j, j - 1)
 
 
-def _less(v: T, w: T):
+def _less(v: T, w: T) -> bool:
     return v < w
 
 
-def _exch(a: List[T], i: int, j: int):
+def _exch(a: List[T], i: int, j: int) -> None:
     t = a[i]
     a[i] = a[j]
     a[j] = t
 
 
-def _show(a: List[T]):
+def _show(a: List[T]) -> None:
     # Prints the array on a single line
     for item in a:
         print(item, end=" ")
     print()
 
 
-def is_sorted(a: List[T]):
+def is_sorted(a: List[T]) -> bool:
     """Returns true if a is sorted.
 
     :param a: the array to be checked.

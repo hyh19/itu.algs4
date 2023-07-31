@@ -1,12 +1,20 @@
 # Created for BADS 2018
 # See README.md for details
 # This is python3
-from typing import Generic, List, Optional, TypeVar
 
+from __future__ import annotations
+from typing import Generic, List, Optional, TypeVar, Protocol, Iterator
 from itu.algs4.errors.errors import NoSuchElementException
 from itu.algs4.stdlib import stdio
 
-Key = TypeVar("Key")
+Key = TypeVar("Key", bound="Comparable")
+
+
+class Comparable(Protocol):
+    """Protocol for annotating comparable types."""
+
+    def __lt__(self: Key, other: Key) -> bool:
+        ...
 
 
 class MinPQ(Generic[Key]):
@@ -120,7 +128,7 @@ class MinPQ(Generic[Key]):
             self._exch(k, k // 2)
             k = k // 2
 
-    def _greater(self, i: int, j: int):
+    def _greater(self, i: int, j: int) -> bool:
         """Check if item at index i is greater than item at index j on the
         heap.
 
@@ -131,7 +139,7 @@ class MinPQ(Generic[Key]):
         """
         return self._pq[i] > self._pq[j]
 
-    def _resize(self, capacity: int):
+    def _resize(self, capacity: int) -> None:
         """Copies the contents of the heap to a new array of size capacity.
 
         :param capacity: The capacity of the new array
@@ -142,7 +150,7 @@ class MinPQ(Generic[Key]):
             temp[i] = self._pq[i]
         self._pq = temp
 
-    def _exch(self, i: int, j: int):
+    def _exch(self, i: int, j: int) -> None:
         """Exchanges the position of items at index i and j on the heap.
 
         :param i: index of the first item
@@ -151,12 +159,14 @@ class MinPQ(Generic[Key]):
         """
         self._pq[i], self._pq[j] = self._pq[j], self._pq[i]
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Key]:
         """Iterates over all the items in this priority queue in ascending
         order."""
-        copy = MinPQ(self.size())
+        copy: MinPQ[Key] = MinPQ(self.size())
         for i in range(1, self._n + 1):
-            copy.insert(self._pq[i])
+            key = self._pq[i]
+            assert key is not None
+            copy.insert(key)
         for i in range(1, copy._n + 1):
             yield copy.del_min()
 

@@ -13,20 +13,20 @@ class BoyerMoore:
 
     """
 
-    def __init__(self, pat):
+    def __init__(self, pat: str) -> None:
         """Preprocesses the pattern string.
 
         :param pat: the pattern string
 
         """
-        self.pat = pat
+        self._pat = pat
         M = len(pat)
         R = 256
-        self.right = [-1 for i in range(0, R)]  # -1 for chars not in pattern
+        self.right = [-1 for _ in range(0, R)]  # -1 for chars not in pattern
         for j in range(0, M):
             self.right[ord(pat[j])] = j
 
-    def search(self, txt):
+    def search(self, txt: str) -> int:
         """Returns the index of the first occurrrence of the pattern string in
         the text string.
 
@@ -36,14 +36,13 @@ class BoyerMoore:
 
         """
         N = len(txt)
-        M = len(self.pat)
-        skip = 0
+        M = len(self._pat)
         i = 0
         # for i in range(0,N-M+1,skip):
         while i <= N - M:
             skip = 0
             for j in range(M - 1, -1, -1):
-                if not (self.pat[j] == txt[i + j]):
+                if not (self._pat[j] == txt[i + j]):
                     skip = j - self.right[ord(txt[i + j])]
                     if skip < 1:
                         skip = 1

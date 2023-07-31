@@ -47,7 +47,7 @@ class Queue(Generic[T]):
         :param item: the item to add
 
         """
-        old_last: Optional[Node[T]] = self._last
+        old_last = self._last
         self._last = Node(item, None)
         if self.is_empty():
             self._first = self._last

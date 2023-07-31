@@ -27,7 +27,6 @@ For additional details and documentation, see Section 3.2 of Algorithms,
 
 """
 
-
 Val = TypeVar("Val")
 Key = TypeVar("Key", bound="Comparable")
 
@@ -39,7 +38,7 @@ class Comparable(Protocol):
 
 
 class Node(Generic[Key, Val]):
-    def __init__(self, key: Key, value: Optional[Val], size: int):
+    def __init__(self, key: Key, value: Optional[Val], size: int) -> None:
         self.left: Optional[Node[Key, Val]] = None  # root of left subtree
         self.right: Optional[Node[Key, Val]] = None  # root of right subtree
         self.key: Key = key  # sorted by key
@@ -120,15 +119,15 @@ class BST(Generic[Key, Val]):
         self._root = self._put(self._root, key, value)
 
     def _put(
-        self, node: Optional[Node[Key, Val]], key: Key, value: Optional[Val]
+            self, node: Optional[Node[Key, Val]], key: Key, value: Optional[Val]
     ) -> Node[Key, Val]:
         if node is None:
-            newnode: Node[Key, Val] = Node(key, value, 1)
-            return newnode
+            new_node: Node[Key, Val] = Node(key, value, 1)
+            return new_node
         else:
-            if key < (node.key):
+            if key < node.key:
                 node.left = self._put(node.left, key, value)
-            elif key > (node.key):
+            elif key > node.key:
                 node.right = self._put(node.right, key, value)
             else:
                 node.value = value
@@ -175,7 +174,7 @@ class BST(Generic[Key, Val]):
         self._root = self._delete(self._root, key)
 
     def _delete(
-        self, node: Optional[Node[Key, Val]], key: Key
+            self, node: Optional[Node[Key, Val]], key: Key
     ) -> Optional[Node[Key, Val]]:
         if node is None:
             return None
@@ -240,7 +239,7 @@ class BST(Generic[Key, Val]):
             return node.key
 
     def _floor(
-        self, node: Optional[Node[Key, Val]], key: Key
+            self, node: Optional[Node[Key, Val]], key: Key
     ) -> Optional[Node[Key, Val]]:
         if node is None:
             return None
@@ -266,7 +265,7 @@ class BST(Generic[Key, Val]):
             return node.key
 
     def _ceiling(
-        self, node: Optional[Node[Key, Val]], key: Key
+            self, node: Optional[Node[Key, Val]], key: Key
     ) -> Optional[Node[Key, Val]]:
         if node is None:
             return None
@@ -298,7 +297,7 @@ class BST(Generic[Key, Val]):
         return queue
 
     def _range_keys(
-        self, node: Optional[Node[Key, Val]], queue: Queue[Key], lo: Key, hi: Key
+            self, node: Optional[Node[Key, Val]], queue: Queue[Key], lo: Key, hi: Key
     ) -> None:
         if node is None:
             return
@@ -381,9 +380,9 @@ class BST(Generic[Key, Val]):
 
         """
         if lo is None:
-            return IllegalArgumentException("first argument to size() is None")
+            raise IllegalArgumentException("first argument to size() is None")
         if hi is None:
-            return IllegalArgumentException("second argument to size() is None")
+            raise IllegalArgumentException("second argument to size() is None")
         if lo > hi:
             return 0
         if self.contains(hi):

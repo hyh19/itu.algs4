@@ -3,10 +3,23 @@
 # This is python3
 """The Shellsort module provides static methods for sorting an array using
 shellsort with Knuth's increment sequence (1, 4, 13, 40, ...)."""
+
+from __future__ import annotations
+
 import sys
+from typing import List, TypeVar, Protocol
+
+T = TypeVar("T", bound="Comparable")
 
 
-def sort(a):
+class Comparable(Protocol):
+    """Protocol for annotating comparable types."""
+
+    def __lt__(self: T, other: T) -> bool:
+        ...
+
+
+def sort(a: List[T]) -> None:
     """Rearranges the array in ascending order using the natural order.
 
     :param a: the array to be sorted.
@@ -27,24 +40,24 @@ def sort(a):
         h = int(h / 3)
 
 
-def _less(v, w):
+def _less(v: T, w: T) -> bool:
     return v < w
 
 
-def _exch(a, i, j):
+def _exch(a: List[T], i: int, j: int) -> None:
     t = a[i]
     a[i] = a[j]
     a[j] = t
 
 
-def _show(a):
+def _show(a: List[T]) -> None:
     # Prints the array on a single line
     for item in a:
         print(item, end=" ")
     print()
 
 
-def is_sorted(a):
+def is_sorted(a: List[T]) -> bool:
     """Returns true if a is sorted.
 
     :param a: the array to be checked.
