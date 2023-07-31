@@ -39,7 +39,7 @@ class Graph:
             raise ValueError("Number of vertices must be nonnegative")
         self._V = V  # number of vertices
         self._E = 0  # number of edges
-        self._adj: List[Bag] = []  # adjacency lists
+        self._adj: List[Bag[int]] = []  # adjacency lists
 
         for _ in range(V):
             self._adj.append(Bag())  # Initialize all lists to empty bags.
@@ -124,7 +124,7 @@ class Graph:
         self._adj[w].add(v)  # add v to w's list
         self._E += 1
 
-    def adj(self, v: int) -> Bag:
+    def adj(self, v: int) -> Bag[int]:
         """Returns the vertices adjacent to vertex v.
 
         :param v: the vertex
