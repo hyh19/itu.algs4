@@ -1,6 +1,7 @@
 # Created for BADS 2018
 # see README.md for details
 # This is python3
+from typing import List
 
 from itu.algs4.fundamentals.bag import Bag
 from itu.algs4.fundamentals.stack import Stack
@@ -26,7 +27,7 @@ class Graph:
 
     """
 
-    def __init__(self, V):
+    def __init__(self, V: int) -> None:
         """Initializes an empty graph with V vertices and 0 edges. param V the
         number of vertices.
 
@@ -38,7 +39,7 @@ class Graph:
             raise ValueError("Number of vertices must be nonnegative")
         self._V = V  # number of vertices
         self._E = 0  # number of edges
-        self._adj = []  # adjacency lists
+        self._adj: List[Bag] = []  # adjacency lists
 
         for _ in range(V):
             self._adj.append(Bag())  # Initialize all lists to empty bags.
@@ -90,7 +91,7 @@ class Graph:
             for w in reverse:
                 g._adj[v].add(w)
 
-    def V(self):
+    def V(self) -> int:
         """Returns the number of vertices in this graph.
 
         :returns: the number of vertices in this graph.
@@ -98,7 +99,7 @@ class Graph:
         """
         return self._V
 
-    def E(self):
+    def E(self) -> int:
         """Returns the number of edges in this graph.
 
         :returns: the number of edges in this graph.
@@ -106,12 +107,12 @@ class Graph:
         """
         return self._E
 
-    def _validateVertex(self, v):
+    def _validateVertex(self, v: int) -> None:
         # throw a ValueError unless 0 <= v < V
         if v < 0 or v >= self._V:
             raise ValueError("vertex {} is not between 0 and {}".format(v, self._V))
 
-    def add_edge(self, v, w):
+    def add_edge(self, v: int, w: int) -> None:
         """Adds the undirected edge v-w to this graph.
 
         :param v: one vertex in the edge
@@ -123,7 +124,7 @@ class Graph:
         self._adj[w].add(v)  # add v to w's list
         self._E += 1
 
-    def adj(self, v):
+    def adj(self, v: int) -> Bag:
         """Returns the vertices adjacent to vertex v.
 
         :param v: the vertex
@@ -134,7 +135,7 @@ class Graph:
         self._validateVertex(v)
         return self._adj[v]
 
-    def degree(self, v):
+    def degree(self, v: int) -> int:
         """Returns the degree of vertex v.
 
         :param v: the vertex
@@ -145,7 +146,7 @@ class Graph:
         self._validateVertex(v)
         return self._adj[v].size()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Returns a string representation of this graph.
 
         :returns: the number of vertices V, followed by the number of edges E,
@@ -154,9 +155,9 @@ class Graph:
         """
         s = ["{} vertices, {} edges\n".format(self._V, self._E)]
         for v in range(self._V):
-            s.append("%d : " % (v))
+            s.append("%d : " % v)
             for w in self._adj[v]:
-                s.append("%d " % (w))
+                s.append("%d " % w)
             s.append("\n")
 
         return "".join(s)
